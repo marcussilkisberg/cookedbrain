@@ -69,7 +69,7 @@ export const FOOT = `<footer class="foot wrap"><p>Free and unlimited. Entertainm
 
 /** One deadpan line under the burner. Seeded by the day, so everyone sees the same one. */
 const LINES = [
-  'Has AI cooked your brain? Time to crank the old rusty engine.',
+  'Time to crank the old rusty engine.',
   'You have outsourced your memory to a chatbot. Let us see what is left.',
   'No calculator. We cannot stop you, but we will know.',
   'Your brain, medium rare. Probably.',
@@ -89,21 +89,16 @@ export function homeHtml() {
   <section class="hero">
     <canvas id="burner" aria-hidden="true"></canvas>
     <button class="hero-go" id="hero-go" aria-label="Start the reaction time test">
-      <span class="hero-kicker">The average brain notices in 273 ms.</span>
-      <span class="hero-line">How long does yours take?</span>
-      <span class="hero-cta">Press anywhere. The burner is the first test.<kbd>Space</kbd></span>
+      <span class="hero-line">Has AI cooked<br>your brain?</span>
+      <span class="hero-sub">Every answer is one prompt away. Memory, maths, attention: use them or lose them. Fifteen tests measure what is left.</span>
+      <span class="hero-cta">Press anywhere to find out<kbd>Space</kbd></span>
     </button>
   </section>
   <section class="wrap home-intro">
     ${back}
-    <div class="ladder" aria-label="The doneness scale">${TIERS.map((t) => `<span style="--tier:var(--t-${t.id})">${esc(t.name)}</span>`).join('')}</div>
     <p class="home-hook">Every round ends with one number: the share of players who beat you. That is how cooked you are.</p>
+    <div class="ladder" aria-label="The doneness scale">${TIERS.map((t) => `<span style="--tier:var(--t-${t.id})">${esc(t.name)}</span>`).join('')}</div>
     <p class="home-line">${esc(lineOfTheDay())}</p>
-    <ul class="home-facts">
-      <li><b>${TESTS.length} tests</b>, most under a minute</li>
-      <li><b>See how you place</b> after every round</li>
-      <li><b>No sign-up</b>, no app, nothing to install</li>
-    </ul>
   </section>
   <div class="wrap">${testCards()}</div>${FOOT}`;
 }
