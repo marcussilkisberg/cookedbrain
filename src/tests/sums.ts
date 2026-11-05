@@ -101,7 +101,7 @@ export const sums: CookedTest<Content, Trial> = {
     const avg = trials.length ? trials.reduce((s, t) => s + t.ms, 0) / trials.length : 0;
     return {
       score: trials.length,
-      valid: true,
+      valid: trials.length === 0 || trials.reduce((s, t) => s + t.ms, 0) / trials.length >= 250,
       detail: [
         { label: 'Average answer', value: `${(avg / 1000).toFixed(2)} s` },
         { label: 'Slips', value: String(slips) },

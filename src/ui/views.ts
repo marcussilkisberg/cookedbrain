@@ -1,6 +1,6 @@
 import { FAMILIES, type CookedTest, type InputClass } from '../core/types';
 import { median, place, tierFor, TIERS, type Tier } from '../core/stats';
-import { keyFor, store, type TestRow } from '../core/store';
+import { keyFor, store, type PopulationRow, type TestRow } from '../core/store';
 import { TESTS, testById } from '../tests';
 import { esc, meltStyle } from './dom';
 import { fmt, pct } from './results';
@@ -21,7 +21,7 @@ function mainRow(t: CookedTest): { input: InputClass; row: TestRow } | null {
 function standing(t: CookedTest): { cooked: number; tier: Tier; best: number; rounds: number; input: InputClass } | null {
   const m = mainRow(t);
   if (!m) return null;
-  const p = place(t, m.input, median(m.row.recent), store.others(keyFor(t.id, m.input)));
+  const p = place(t, m.input, median(m.row.recent), store.othersCached(t, m.input));
   return { cooked: p.cooked, tier: p.tier, best: m.row.best, rounds: m.row.rounds, input: m.input };
 }
 
@@ -184,7 +184,7 @@ export function youHtml(claim: string) {
       ${needs.length ? `<p class="you-need">To unlock your overall score and your <a href="#join">Certificate of Doneness</a>, ${esc(needs.join(' and '))}.</p>` : `<p class="you-need"><a href="#join">Your Certificate of Doneness</a> is signed.</p>`}
     </div>
     <div class="you-main">
-      ${claim}
+      ${claim}${emailHtml()}
       ${
         played.length
           ? `<table class="stat tall"><thead><tr><th scope="col">Test</th><th scope="col">Best</th><th scope="col">Standing</th><th scope="col">Rounds</th></tr></thead><tbody>${played
@@ -204,14 +204,12 @@ export interface BoardState {
   input: InputClass;
 }
 
-export function boardHtml(state: BoardState) {
+export async function boardHtml(state: BoardState) {
   const t = testById(state.test) ?? TESTS[0]!;
-  const key = keyFor(t.id, state.input);
-  const { named, guests } = store.board(key, t.lowerIsBetter);
-  const others = store.others(key);
+  const { named, guests, others } = await store.board(t, state.input);
 
   const rows = named
-    .map((r, i) => {
+    .map((r: PopulationRow, i: number) => {
       const p = place(t, state.input, r.row.best, others);
       const me = r.id === 'me';
       return `<tr class="${me ? 'me' : ''}"><td class="v">${i + 1}</td><th scope="row">${esc(r.name ?? '')}${me ? ' <small>you</small>' : ''}</th><td class="v">${esc(fmt(t, r.row.best))}</td><td>${chip(p.tier)}</td></tr>`;
@@ -265,7 +263,28 @@ export function claimHtml(context: 'result' | 'you', beaten?: number) {
       </div>
       <p class="claim-err" id="claim-err" role="alert"></p>
     </form>
-    <p class="claim-fine">No email or password yet. Your name is the whole sign-up.${context === 'result' ? ' <a href="#join">See the certificate</a>' : ''}</p>
+    <p class="claim-fine">No password. Your name is the whole sign-up.${context === 'result' ? ' <a href="#join">See the certificate</a>' : ''}</p>
+  </aside>`;
+}
+
+/** Email keeps a name across devices. Shown once a name exists. */
+export function emailHtml() {
+  if (!store.shared || !store.doc.name) return '';
+  if (store.doc.email) {
+    return `<aside class="panel claim"><h2>Signed in as ${esc(store.doc.email)}</h2><p>Your stats follow you to any device. <button class="tk-link" id="signout">Sign out</button></p></aside>`;
+  }
+  return `
+  <aside class="panel claim">
+    <h2>Keep ${esc(store.doc.name)} on your other devices</h2>
+    <p>Add an email and we send you a sign-in link. No password, ever.</p>
+    <form id="email-form" novalidate>
+      <label for="email">Email</label>
+      <div class="claim-row">
+        <input id="email" type="email" name="email" autocomplete="email" placeholder="you@example.com">
+        <button class="btn primary" type="submit">Send link</button>
+      </div>
+      <p class="claim-err" role="alert"></p>
+    </form>
   </aside>`;
 }
 
@@ -308,14 +327,15 @@ export function joinHtml(claim: string) {
       <h1 class="page-h">${name ? 'Signed up' : 'Sign up'}</h1>
       <p class="page-sub">${
         name
-          ? `You are ${esc(name)}. That is the whole account for now: no password, no email, nothing to forget.`
+          ? `You are ${esc(name)}. No password to forget; an email keeps the name on your other devices.`
           : 'Play everything as a guest. When you want your stats to stick, pick a name. It takes four seconds and no email.'
       }</p>
       ${certificateHtml(name, card.overall, card.done)}
       <p class="you-need">The certificate is signed once you have played every family and claimed a name. It is not legally binding, medically meaningful or in any way a measure of intelligence. It is a piece of paper from a kitchen.</p>
     </div>
     <div class="you-main">
-      ${claim || `<div class="panel"><h2>Welcome back, ${esc(name!)}.</h2><p>Your scores, board place and certificate are tied to this name. Real accounts with a password arrive with cookedbrain.com.</p><div class="res-actions"><a class="btn primary" href="#you">Your stats</a><a class="btn" href="#board">The board</a></div></div>`}
+      ${claim || `<div class="panel"><h2>Welcome back, ${esc(name!)}.</h2><p>Your scores, board place and certificate are tied to this name.</p><div class="res-actions"><a class="btn primary" href="#you">Your stats</a><a class="btn" href="#board">The board</a></div></div>`}
+      ${emailHtml()}
     </div>
   </div>${FOOT}`;
 }

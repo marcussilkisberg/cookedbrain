@@ -73,7 +73,7 @@ export const dont: CookedTest<Content, Trial> = {
     const score = Math.max(0, Math.round(hits.length * 2 - slips * 6 - missed * 2 + Math.max(0, 40 - avg / 10)));
     return {
       score,
-      valid: trials.length === ROUNDS,
+      valid: trials.length === ROUNDS && hits.every((t) => (t.rt ?? 0) >= 100),
       detail: [
         { label: 'Pressed on a square', value: String(slips) },
         { label: 'Missed circles', value: String(missed) },

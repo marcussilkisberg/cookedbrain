@@ -145,7 +145,7 @@ export const spin: CookedTest<Content, Trial> = {
     const wrong = trials.length - right;
     return {
       score: Math.max(0, right - wrong),
-      valid: trials.length >= 3,
+      valid: trials.length >= 3 && trials.reduce((s, t) => s + t.ms, 0) / trials.length >= 150,
       detail: [
         { label: 'Right', value: String(right) },
         { label: 'Wrong', value: String(wrong) },

@@ -89,7 +89,7 @@ export const chimp: CookedTest<Content, Trial> = {
     const held = trials.filter((t) => t.ok).reduce((m, t) => Math.max(m, t.count), START - 1);
     return {
       score: held,
-      valid: trials.length > 0,
+      valid: trials.length > 0 && trials.length <= 40 && trials.every((t) => t.count >= START && t.count <= 30),
       detail: [{ label: 'Boards cleared', value: String(trials.filter((t) => t.ok).length) }],
     };
   },

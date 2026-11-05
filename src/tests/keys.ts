@@ -137,7 +137,7 @@ export const keys: CookedTest<Content, Trial> = {
     const total = right + wrong || 1;
     return {
       score: Math.round(chars / 5 / (DURATION / 60000)),
-      valid: trials.length >= 3,
+      valid: trials.length >= 3 && chars / 5 / (DURATION / 60000) <= 300,
       detail: [
         { label: 'Accuracy', value: `${Math.round((right / total) * 100)}%` },
         { label: 'Words right', value: String(right) },

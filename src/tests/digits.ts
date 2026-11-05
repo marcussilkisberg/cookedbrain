@@ -87,7 +87,7 @@ export const digits: CookedTest<Content, Trial> = {
     const held = trials.filter((t) => t.ok).reduce((m, t) => Math.max(m, t.length), START - 1);
     return {
       score: held,
-      valid: trials.length > 0,
+      valid: trials.length > 0 && trials.every((t, i) => t.length === START + i && t.ok === (t.entered === t.shown)),
       detail: [{ label: 'Longest held', value: `${held} digits` }],
     };
   },

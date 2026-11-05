@@ -96,11 +96,11 @@ export const flinch: CookedTest<Content, Trial> = {
   },
 
   score(trials) {
-    const valid = trials.flatMap((t) => (t.rt == null ? [] : [t.rt]));
+    const valid = trials.flatMap((t) => (t.rt == null || t.rt < FLOOR_MS || !Number.isFinite(t.rt) ? [] : [t.rt]));
     const early = trials.length - valid.length;
     return {
       score: Math.round(median(valid)),
-      valid: valid.length >= ROUNDS,
+      valid: valid.length >= ROUNDS && trials.length <= ROUNDS * 4,
       detail: [
         { label: 'Fastest', value: `${Math.round(Math.min(...valid))} ms` },
         { label: 'Slowest', value: `${Math.round(Math.max(...valid))} ms` },

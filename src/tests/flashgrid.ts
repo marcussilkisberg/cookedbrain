@@ -94,7 +94,7 @@ export const flashgrid: CookedTest<Content, Trial> = {
     const reached = trials.filter((t) => t.ok).reduce((m, t) => Math.max(m, t.level), 0);
     return {
       score: reached,
-      valid: trials.length > 0,
+      valid: trials.length > 0 && trials.length <= 40 && trials.filter((t) => !t.ok).length <= LIVES,
       detail: [
         { label: 'Boards cleared', value: String(trials.filter((t) => t.ok).length) },
         { label: 'Wrong squares', value: String(trials.reduce((s, t) => s + t.misses, 0)) },

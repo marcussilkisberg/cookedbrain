@@ -1,3 +1,4 @@
 node_modules
 dist/local.html
 e2e/out
+.dev.vars

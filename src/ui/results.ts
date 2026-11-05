@@ -15,6 +15,12 @@ export interface Outcome {
   usual: Placement;
   orderNo: number;
   when: Date;
+  /** Scored on the server. */
+  verified: boolean;
+  /** Public seed for a challenge link, when the server accepted the round. */
+  challenge: string | null;
+  /** The score this round was played against, if it came from a challenge link. */
+  versus: { score: number; name: string | null } | null;
 }
 
 const baseUnit = (t: CookedTest) => (t.unit.startsWith('ms') ? 'ms' : t.unit);
@@ -97,11 +103,12 @@ function chart(o: Outcome): string {
   <div class="dist-ends"><span>Raw · ${esc(fmt(t, p.bestEnd))}</span><span>${esc(fmt(t, p.worstEnd))} · Burnt</span></div>`;
 }
 
-function basisLine(p: Placement) {
-  if (p.basis === 'players') return `Compared with ${p.players.toLocaleString('en-GB')} ${p.who}, one row each.`;
-  if (p.basis === 'early') return `Early estimate from ${p.players} ${p.who}.`;
+function basisLine(p: Placement, verified = true) {
+  const tail = verified ? '' : ' This round was scored on your device only.';
+  if (p.basis === 'players') return `Compared with ${p.players.toLocaleString('en-GB')} ${p.who}, one row each.${tail}`;
+  if (p.basis === 'early') return `Early estimate from ${p.players} ${p.who}.${tail}`;
   const seen = p.players ? ` ${p.players} so far.` : '';
-  return `Reference curve, modelled rather than measured. Real placement starts at 30 ${p.who}.${seen}`;
+  return `Reference curve, modelled rather than measured. Real placement starts at 30 ${p.who}.${seen}${tail}`;
 }
 
 function statRows(o: Outcome) {
@@ -159,6 +166,14 @@ export function shareText(o: Outcome) {
   return `${o.test.name}: ${l.test[1]!.toLowerCase()}. ${pct(o.placement.cooked)} cooked, ${o.placement.tier.name}.\nHow cooked is your brain? cookedbrain.com`;
 }
 
+function versusLine(o: Outcome): string | null {
+  if (!o.versus) return null;
+  const g = gap(o.test, o.result.score, o.versus.score);
+  const who = o.versus.name ?? 'them';
+  if (g.n === 0) return `Dead level with ${who}. Rematch.`;
+  return g.ahead ? `You beat ${who} by ${g.text.replace(/ (faster|ahead|closer)$/, '')}. Send it back.` : `${who} stays ahead by ${g.text.replace(/ (slower|behind|further off)$/, '')}. Again.`;
+}
+
 function headline(o: Outcome) {
   const { before, isBest, test: t, result, placement: p } = o;
   if (!before) return 'First round logged. Now beat it.';
@@ -181,7 +196,7 @@ export function resultsHtml(o: Outcome, claim: string) {
       <h1 class="res-num" style="${meltStyle(p.cooked)}">${esc(t.format(result.score))}<small>${esc(t.unit === 'level' ? 'level' : noun(t, result.score))}</small></h1>
       <p class="res-cooked"><b>${esc(pct(p.cooked))} cooked</b><span class="tier-chip">${esc(p.tier.name)}</span></p>
       <p class="res-beat">You beat ${estimated}${esc(pct(p.beaten))} of ${esc(p.who)}.</p>
-      <p class="res-line">${esc(headline(o))}</p>
+      <p class="res-line">${esc(versusLine(o) ?? headline(o))}</p>
       <div class="res-actions">
         <button class="btn primary" id="again">Again<kbd>Space</kbd></button>
         <button class="btn" id="next">Next test<kbd>N</kbd></button>
@@ -191,7 +206,7 @@ export function resultsHtml(o: Outcome, claim: string) {
       <div class="panel">
         <h2>How you place</h2>
         ${chart(o)}
-        <p class="basis ${p.basis}">${esc(basisLine(p))}</p>
+        <p class="basis ${p.basis}">${esc(basisLine(p, o.verified))}</p>
       </div>
       <div class="panel">
         <table class="stat"><tbody>${statRows(o)
@@ -207,7 +222,7 @@ export function resultsHtml(o: Outcome, claim: string) {
         ${line(l.test[0]!, l.test[1]!)}${line(l.cooked[0]!, l.cooked[1]!)}
         <div class="tk-l"><span>${esc(l.beat)}</span></div>
         <div class="tk-rule"></div>
-        <button class="tk-copy" id="copy">Copy result</button>
+        <button class="tk-copy" id="copy">Copy result</button>${o.challenge ? `<button class="tk-copy" id="share">Copy challenge link</button>` : ''}
       </div>
   </section>`;
 }

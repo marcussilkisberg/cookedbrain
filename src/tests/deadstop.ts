@@ -84,7 +84,7 @@ export const deadstop: CookedTest<Content, Trial> = {
     const mean = abs.reduce((a, b) => a + b, 0) / (abs.length || 1);
     return {
       score: Math.round(mean),
-      valid: trials.length === ATTEMPTS,
+      valid: trials.length === ATTEMPTS && trials.every((t) => Number.isFinite(t.error) && TARGETS.includes(t.target)),
       detail: trials.map((t) => ({
         label: `${(t.target / 1000).toFixed(0)} s target`,
         value: `${t.error >= 0 ? '+' : '-'}${Math.abs(Math.round(t.error))} ms`,

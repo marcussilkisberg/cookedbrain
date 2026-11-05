@@ -94,7 +94,7 @@ export const offcolour: CookedTest<Content, Trial> = {
     const cleared = trials.filter((t) => t.ok).length;
     return {
       score: cleared,
-      valid: trials.length > 0,
+      valid: trials.length > 0 && trials.length <= 120,
       detail: [
         { label: 'Levels cleared', value: String(cleared) },
         { label: 'Wrong picks', value: String(trials.length - cleared) },

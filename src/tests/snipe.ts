@@ -79,7 +79,7 @@ export const snipe: CookedTest<Content, Trial> = {
     const n = trials.length || 1;
     return {
       score: Math.round(total / n),
-      valid: trials.length === TARGETS - 1,
+      valid: trials.length === TARGETS - 1 && trials.every((t) => Number.isFinite(t.ms) && t.ms >= 60),
       detail: [
         { label: 'Total time', value: `${(total / 1000).toFixed(2)} s` },
         { label: 'Misses', value: String(misses) },
