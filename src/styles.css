@@ -98,7 +98,7 @@ kbd {
   white-space: nowrap;
   letter-spacing: .01em;
 }
-.mark i { font-style: normal; color: var(--t-raw); }
+.mark i { font-style: normal; color: var(--gas); }
 .top nav { display: flex; align-items: center; gap: 4px; min-width: 0; }
 .top nav a, .snd {
   padding: 8px 10px;
@@ -142,13 +142,18 @@ kbd {
   text-transform: uppercase;
   text-wrap: balance;
 }
+.hero-kicker { font-size: clamp(14px, 2vmin, 17px); color: var(--ash); }
 .hero-cta { font-size: 14px; color: var(--ash); }
-.hero-note {
-  text-align: center;
-  color: var(--ash);
-  font-size: 15px;
-  padding-block: 0 8px;
-}
+.home-intro { display: grid; gap: 14px; justify-items: center; text-align: center; padding-block: 8px 12px; }
+.home-back { color: var(--ash); font-size: 15px; }
+.home-back b { color: var(--bone); }
+.ladder { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
+.ladder span { font: 800 11px/1 var(--f-ticket); font-variation-settings: 'ROND' 100; text-transform: uppercase; letter-spacing: .06em; padding: 6px 9px; border-radius: 4px; color: #120e0b; background: var(--tier); }
+.ladder span:nth-last-child(-n+2) { color: var(--bone); }
+.home-hook { max-width: 56ch; color: var(--bone); font-size: 17px; line-height: 1.45; text-wrap: balance; }
+.home-line { color: var(--smoke); font-size: 14px; font-style: italic; margin-top: -6px; }
+.home-facts { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 28px; color: var(--ash); font-size: 14px; }
+.home-facts b { color: var(--bone); font-weight: 600; }
 
 /* Test list */
 .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; padding-top: 16px; }

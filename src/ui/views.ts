@@ -1,5 +1,5 @@
 import { FAMILIES, type CookedTest, type InputClass } from '../core/types';
-import { median, place, tierFor, type Tier } from '../core/stats';
+import { median, place, tierFor, TIERS, type Tier } from '../core/stats';
 import { keyFor, store, type TestRow } from '../core/store';
 import { TESTS, testById } from '../tests';
 import { esc, meltStyle } from './dom';
@@ -71,7 +71,7 @@ export const FOOT = `<footer class="foot wrap"><p>Free and unlimited. Entertainm
 const LINES = [
   'Has AI cooked your brain? Time to crank the old rusty engine.',
   'You have outsourced your memory to a chatbot. Let us see what is left.',
-  'Fifteen tests. No sign-up. No calculator, but we cannot stop you.',
+  'No calculator. We cannot stop you, but we will know.',
   'Your brain, medium rare. Probably.',
   'Everyone is a genius until the screen goes bright.',
 ];
@@ -79,17 +79,32 @@ const lineOfTheDay = () => LINES[Math.floor(Date.now() / 864e5) % LINES.length]!
 
 export function homeHtml() {
   const played = Object.keys(store.doc.tests).length;
+  const card = brainCard();
+  const back = played
+    ? `<p class="home-back">Welcome back${store.doc.name ? `, ${esc(store.doc.name)}` : ''}. ${played} of ${TESTS.length} tests played${
+        card.overall != null && store.doc.name ? `, <b>${esc(pct(card.overall))} cooked</b> overall` : ''
+      }.</p>`
+    : '';
   return `
   <section class="hero">
     <canvas id="burner" aria-hidden="true"></canvas>
     <button class="hero-go" id="hero-go" aria-label="Start the reaction time test">
-      <span class="hero-line">How cooked<br>is your brain?</span>
-      <span class="hero-cta">Press anywhere to start<kbd>Space</kbd></span>
+      <span class="hero-kicker">The average brain notices in 273 ms.</span>
+      <span class="hero-line">How long does yours take?</span>
+      <span class="hero-cta">Press anywhere. The burner is the first test.<kbd>Space</kbd></span>
     </button>
   </section>
-  <p class="hero-note wrap">${
-    played ? `Welcome back. ${store.doc.name ? esc(store.doc.name) : 'Guest'}, you have played ${played === 1 ? 'one test' : `${played} tests`} so far.` : esc(lineOfTheDay())
-  }</p>
+  <section class="wrap home-intro">
+    ${back}
+    <div class="ladder" aria-label="The doneness scale">${TIERS.map((t) => `<span style="--tier:var(--t-${t.id})">${esc(t.name)}</span>`).join('')}</div>
+    <p class="home-hook">Every round ends with one number: the share of players who beat you. That is how cooked you are.</p>
+    <p class="home-line">${esc(lineOfTheDay())}</p>
+    <ul class="home-facts">
+      <li><b>${TESTS.length} tests</b>, most under a minute</li>
+      <li><b>See how you place</b> after every round</li>
+      <li><b>No sign-up</b>, no app, nothing to install</li>
+    </ul>
+  </section>
   <div class="wrap">${testCards()}</div>${FOOT}`;
 }
 
