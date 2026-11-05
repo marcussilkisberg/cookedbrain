@@ -1,0 +1,19 @@
+{
+  "name": "cookedbrain",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "typecheck": "tsc --noEmit",
+    "unit": "node e2e/unit.mjs",
+    "e2e": "node e2e/play.mjs"
+  },
+  "devDependencies": {
+    "@fontsource-variable/climate-crisis": "^5.3.0",
+    "@fontsource-variable/familjen-grotesk": "^5.3.0",
+    "@fontsource-variable/martian-mono": "^5.3.0",
+    "esbuild": "^0.24.2",
+    "typescript": "^5.6.3"
+  }
+}

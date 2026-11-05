@@ -1,0 +1,27 @@
+<title>CookedBrain</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>/*__CSS__*/</style>
+<div id="app">
+  <header class="top">
+    <a class="mark" href="#home" aria-label="CookedBrain home">Cooked<i>Brain</i></a>
+    <nav aria-label="Main">
+      <a href="#tests">Tests</a>
+      <a href="#board" id="nav-board" hidden>Board</a>
+      <a href="#you" id="nav-you">Guest</a>
+      <a href="#join" id="nav-join" class="nav-join">Sign up</a>
+      <button id="snd" class="snd" type="button"></button>
+    </nav>
+  </header>
+  <main id="view"></main>
+</div>
+<div id="round" hidden>
+  <div class="hud">
+    <span id="hud-name"></span>
+    <span id="hud-status"></span>
+    <button id="hud-quit" type="button" aria-label="Leave this round">Leave<kbd>Esc</kbd></button>
+  </div>
+  <div class="hud-bar"><i id="hud-bar"></i></div>
+  <div id="arena"></div>
+</div>
+<canvas id="sparks" aria-hidden="true"></canvas>
+<script>/*__JS__*/</script>
