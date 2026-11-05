@@ -12,34 +12,41 @@ float n(vec2 p){
   f=f*f*(3.-2.*f);
   return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);
 }
+float fbm(vec2 p){
+  float v=0.,a=.5;
+  for(int i=0;i<5;i++){v+=a*n(p);p=p*2.07+vec2(1.7,9.2);a*=.5;}
+  return v;
+}
 void main(){
-  vec2 uv=(gl_FragCoord.xy-.5*R)/min(R.x,R.y);
-  float r=length(uv)*2.;
-  float a=atan(uv.y,uv.x);
-  float ports=34.;
-  float s=(a/6.28318+.5)*ports;
-  float id=mod(floor(s),ports);
-  float port=abs(fract(s)-.5)*2.;
-  float wob=n(vec2(id*3.17,T*2.3))*.62+n(vec2(id*9.1,T*5.3))*.38;
-  float ring=.8;
-  float len=.06+.1*wob;
-  float d=(r-ring)/len;
-  float tongue=(1.-smoothstep(.0,1.,d+port*port*.95))*smoothstep(-.04,.1,d);
-  vec3 core=vec3(.62,.84,1.);
-  vec3 blue=vec3(.14,.34,1.);
-  vec3 tip=vec3(1.,.5,.16);
-  vec3 col=mix(core,blue,smoothstep(.0,.55,d));
-  col=mix(col,tip,smoothstep(.72,1.05,d)*.55);
-  vec3 c=col*tongue*1.9;
-  c+=blue*exp(-abs(r-ring-.05)*7.)*.26;
-  float cap=1.-smoothstep(ring-.012,ring+.002,r);
-  float grain=.95+.1*n(uv*38.);
-  vec3 iron=vec3(.083,.075,.07)*grain;
-  iron+=blue*exp(-(ring-r)*12.)*.07;
-  c=mix(c,iron,cap);
-  vec3 hob=vec3(.0863,.0784,.0706);
-  float a2=clamp(max(max(c.r,c.g),c.b)*1.4+cap,0.,1.);
-  gl_FragColor=vec4(mix(hob,c,a2),1.);
+  vec2 uv=gl_FragCoord.xy/R;
+  // A tall flame rising from the bottom centre of the canvas.
+  float x=(uv.x-.5)*R.x/R.y;
+  float y=uv.y;
+  float t=T*.9;
+  float wob=fbm(vec2(x*2.2+t*.3,y*2.6-t*1.5))-.5;
+  float wob2=fbm(vec2(x*5.+t*.6,y*7.-t*3.2))-.5;
+  float xx=x+wob*.22*(.2+y)+wob2*.06;
+  float width=.26*pow(1.-y,.9)+.015;
+  float body=1.-smoothstep(0.,width,abs(xx));
+  float core=1.-smoothstep(0.,width*.42,abs(xx));
+  float flick=fbm(vec2(x*3.,y*4.-t*2.4));
+  float tip=smoothstep(.98,.55,y+flick*.2);
+  float a=body*tip;
+  float c=core*tip*smoothstep(.9,.2,y);
+  vec3 blue=vec3(.17,.38,1.);
+  vec3 pale=vec3(.62,.84,1.);
+  vec3 ember=vec3(1.,.45,.15);
+  vec3 col=mix(blue,pale,c);
+  col=mix(col,ember,smoothstep(.45,.95,y)*.6*body);
+  col*=a*1.7;
+  // Glow around the flame, and a nozzle at the base.
+  col+=blue*exp(-abs(xx)*7.)*smoothstep(1.,.1,y)*.18;
+  float noz=1.-smoothstep(.0,.025,abs(y-.015))*step(.0,1.);
+  float nozw=1.-smoothstep(.08,.1,abs(x));
+  col=mix(col,vec3(.22,.2,.18),noz*nozw*.9);
+  vec3 bg=vec3(.0863,.0784,.0706);
+  float al=clamp(max(max(col.r,col.g),col.b),0.,1.);
+  gl_FragColor=vec4(mix(bg,col,al),1.);
 }`;
 
 const VERT = `attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}`;

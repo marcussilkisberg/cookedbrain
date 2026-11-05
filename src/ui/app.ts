@@ -91,10 +91,7 @@ function route() {
     if (burner.works) burner.start();
     else c.classList.add('no-gl');
     const flinch = testById('flinch')!;
-    $('#hero-go').addEventListener('pointerdown', (e) => {
-      e.preventDefault();
-      void play(flinch);
-    });
+    $('#hero-go').addEventListener('click', () => void play(flinch));
   }
 }
 
