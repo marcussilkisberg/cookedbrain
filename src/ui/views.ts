@@ -87,16 +87,24 @@ export function homeHtml() {
     : '';
   return `
   <section class="hero">
-    <canvas id="burner" aria-hidden="true"></canvas>
-    <button class="hero-go" id="hero-go" aria-label="Start the reaction time test">
-      <span class="hero-line">Has AI cooked<br>your brain?</span>
-      <span class="hero-sub">Every answer is one prompt away. Memory, maths, attention: use them or lose them. Fifteen tests measure what is left.</span>
-      <span class="hero-cta">Press anywhere to find out<kbd>Space</kbd></span>
-    </button>
+    <div class="hero-flame"><canvas id="burner" aria-hidden="true"></canvas></div>
+    <div class="hero-text">
+      <p class="eyebrow">Free. No sign-up. Fifteen tests.</p>
+      <h1 class="hero-line">Has AI cooked<br>your brain?</h1>
+      <p class="hero-sub">You stopped remembering, calculating and concentrating. Something else does it now. CookedBrain is fifteen short tests of reflex, memory, attention, logic and language. Every round shows how you place against everyone else, and your Brain Card adds it up to one verdict: how cooked you are.</p>
+      <div class="hero-actions">
+        <button class="btn primary big" id="hero-go">Start with reaction<kbd>Space</kbd></button>
+        <a class="btn big" href="#tests">All fifteen tests</a>
+      </div>
+      ${back}
+    </div>
+  </section>
+  <section class="wrap how">
+    <div><b>Play</b><span>Twenty seconds to a minute. Unlimited retries, no account needed.</span></div>
+    <div><b>Place</b><span>Your score against other players on the same kind of device, one row each.</span></div>
+    <div><b>Plate</b><span>Seven tiers from Raw to Burnt. Your Brain Card adds every family into one number.</span></div>
   </section>
   <section class="wrap home-intro">
-    ${back}
-    <p class="home-hook">Every round ends with one number: the share of players who beat you. That is how cooked you are.</p>
     <div class="ladder" aria-label="The doneness scale">${TIERS.map((t) => `<span style="--tier:var(--t-${t.id})">${esc(t.name)}</span>`).join('')}</div>
     <p class="home-line">${esc(lineOfTheDay())}</p>
   </section>
