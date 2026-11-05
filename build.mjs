@@ -51,7 +51,7 @@ mkdirSync('dist', { recursive: true });
 writeFileSync('dist/index.html', head + body + '\n</body>\n</html>\n');
 // The artifact version keeps the host's skeleton.
 writeFileSync('dist/artifact.html', readFileSync('src/index.template.html', 'utf8').replace('/*__CSS__*/', () => fonts + css.code).replace('/*__JS__*/', () => script));
-for (const f of ['favicon.svg', 'robots.txt', 'sitemap.xml', '_headers', '_redirects', '404.html']) writeFileSync(`dist/${f}`, readFileSync(`public/${f}`));
+for (const f of ['favicon.svg', 'robots.txt', 'sitemap.xml', '_headers', '404.html']) writeFileSync(`dist/${f}`, readFileSync(`public/${f}`));
 for (const f of ['og.png', 'apple-touch-icon.png']) { try { writeFileSync(`dist/${f}`, readFileSync(`public/${f}`)); } catch {} }
 
 const kb = (n) => `${(n / 1024).toFixed(1)} KB`;
