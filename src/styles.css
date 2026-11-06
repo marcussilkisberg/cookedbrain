@@ -127,7 +127,7 @@ kbd {
   align-items: center;
   min-height: min(78vh, 720px);
 }
-.hero-flame { position: relative; align-self: stretch; min-height: 320px; }
+.hero-flame { position: relative; align-self: stretch; min-height: 320px; order: 2; }
 #burner { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 #burner.no-gl { background: linear-gradient(to top, var(--gas), transparent 70%); mask: radial-gradient(ellipse 30% 60% at 50% 70%, #000, transparent); }
 .hero-text { display: grid; gap: 18px; justify-items: start; text-align: left; min-width: 0; }
