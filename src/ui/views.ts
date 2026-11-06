@@ -312,7 +312,7 @@ export function certificateHtml(name: string | null, overall: number | null, don
     : `${esc(holder)} has not yet been fully assessed. ${!name ? 'A name' : `${FAMILIES.length - done} more ${FAMILIES.length - done === 1 ? 'family' : 'families'}`} required before the chef will sign.`;
   return `
   <div class="cert ${unlocked ? '' : 'locked'}" id="cert" style="--tier:var(--t-${tier?.id ?? 'burnt'})">
-    <p class="cert-top">CookedBrain · Department of Doneness</p>
+    <p class="cert-top">CookedBrain · Dept. of Doneness</p>
     <h2 class="cert-h">Certificate<br>of Doneness</h2>
     <p class="cert-body">This certifies that<br><b>${body}</b></p>
     <p class="cert-grade">${tier ? `${esc(pct(overall!))} cooked · ${esc(tier.name)}` : 'Grade pending'}</p>
