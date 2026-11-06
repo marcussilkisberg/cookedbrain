@@ -111,9 +111,7 @@ kbd {
 .top nav a:hover, .snd:hover { color: var(--bone); }
 .top nav a.on { color: var(--bone); background: var(--iron-3); }
 #nav-you { max-width: 110px; overflow: hidden; text-overflow: ellipsis; }
-.nav-join { color: var(--bone) !important; background: var(--iron-3); }
-.nav-join[hidden] { display: none !important; }
-@media (max-width: 520px) { .top nav:has(.nav-join:not([hidden])) #nav-you { display: none; } }
+.nav-join { display: none !important; }
 
 /* Home */
 .hero {
@@ -534,17 +532,19 @@ body.in-round { overflow: hidden; }
   display: grid;
   gap: 10px;
   overflow: hidden;
+  container-type: inline-size;
 }
+.cert > * { min-width: 0; overflow-wrap: anywhere; }
 .cert.locked { filter: grayscale(.4); }
 .cert.locked .cert-body, .cert.locked .cert-grade { opacity: .7; }
 .cert-top { font: 800 11px/1.4 var(--f-ticket); font-variation-settings: 'ROND' 100; letter-spacing: .08em; text-transform: uppercase; text-align: left; padding-right: 96px; }
-.cert-h { font: 400 clamp(26px, 6vw, 36px)/1.05 var(--f-melt); text-transform: uppercase; }
+.cert-h { font: 400 clamp(20px, 8.6cqw, 34px)/1.05 var(--f-melt); text-transform: uppercase; }
 .cert-body { font-size: 15px; line-height: 1.45; }
 .cert-body b { font-weight: 700; }
 .cert-grade { font: 800 16px/1.3 var(--f-ticket); font-variation-settings: 'ROND' 100; text-transform: uppercase; color: var(--tier); }
 .cert.locked .cert-grade { color: var(--ink); }
-.cert-foot { display: flex; justify-content: space-between; gap: 12px; font-size: 12px; padding-top: 10px; border-top: 1px dotted var(--ink); }
-.cert-sign { font: 400 15px/1 var(--f-melt); font-variation-settings: 'YEAR' 2040; text-transform: uppercase; }
+.cert-foot { display: flex; justify-content: space-between; align-items: center; gap: 12px; font-size: 12px; padding-top: 10px; border-top: 1px dotted var(--ink); }
+.cert-sign { font: 400 13px/1 var(--f-melt); white-space: nowrap; font-variation-settings: 'YEAR' 2040; text-transform: uppercase; }
 .cert-stamp {
   position: absolute;
   right: 14px;
